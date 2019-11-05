@@ -1,7 +1,9 @@
 package com.pres.lucene;
 
+import com.pres.ik.IKAnalyzer;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.TokenStream;
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.analysis.tokenattributes.CharTermAttribute;
@@ -51,7 +53,7 @@ public class LuceneApplicationTests {
         Directory directory = FSDirectory.open(Paths.get("F:\\WechatFile\\lucene"));
 
         // 标准解析器
-        StandardAnalyzer analyzer = new StandardAnalyzer();
+        Analyzer analyzer = new IKAnalyzer();
 
         // 创建分词器 并指定分词器
         IndexWriterConfig config = new IndexWriterConfig(analyzer);
@@ -105,6 +107,7 @@ public class LuceneApplicationTests {
         document.add(new TextField("title",title, Field.Store.YES));
         document.add(new TextField("desc",desc,Field.Store.YES));
         indexWriter.addDocument(document);
+
     }
     /**
      * 查询
@@ -118,7 +121,7 @@ public class LuceneApplicationTests {
         // query
         String queryStr="亲子卫";
 
-        StandardAnalyzer  analyzer=new StandardAnalyzer();
+        Analyzer  analyzer=new IKAnalyzer();
         Query parse = new QueryParser("desc",analyzer).parse(queryStr);
 
         int hitsPerPage = 10;
@@ -155,8 +158,8 @@ public class LuceneApplicationTests {
     @Test
     @SneakyThrows({IOException.class})
     public void cutWords(){
-        StandardAnalyzer analyzer=new StandardAnalyzer();
-        String text = "Spark是当前最流行的开源大数据内存计算框架，采用Scala语言实现，由UC伯克利大学AMPLab实验室开发并于2010年开源。";
+        Analyzer analyzer=new IKAnalyzer();
+        String text = "厉害了我的国一经播出，受到各方好评，强烈激发了国人的爱国之情、自豪感！";
         TokenStream tokenStream = analyzer.tokenStream("content", text);
         CharTermAttribute charTermAttribute = tokenStream.addAttribute(CharTermAttribute.class);
         tokenStream.reset();
